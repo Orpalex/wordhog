@@ -50,13 +50,21 @@
     <div id="turn-message">Player 1's Turn</div>
     
     <script>
-        const wordList = [
-            "rain", "rainy", "main", "train", "spin", "in", "tin", "spin", "rain", "sword", "horse", "host", "past"
-        ];
-
-        let tiles = ['r', 'a', 'i', 'n', 't', 's', 'p', 'o', 'd', 'e', 'h', 'l'];
+        let wordList = [];
+        const tiles = ['r', 'a', 'i', 'n', 't', 's', 'p', 'o', 'd', 'e', 'h', 'l'];
         let flippedTiles = [];
         let currentPlayer = 1;
+
+        // Fetch the word list from words.txt
+        fetch('https://raw.githubusercontent.com/orpalex/wordhog/main/words.txt')
+            .then(response => response.text())
+            .then(text => {
+                wordList = text.split('\n').map(word => word.trim().toLowerCase());
+                console.log('Word list loaded:', wordList); // For debugging
+            })
+            .catch(error => {
+                console.error('Error loading word list:', error);
+            });
 
         // Shuffle the tiles array to simulate random tile flipping
         function shuffleTiles() {
@@ -111,4 +119,39 @@
         document.getElementById('submit-word').addEventListener('click', () => {
             const wordInput = document.getElementById('word-input').value.toLowerCase();
             if (flippedTiles.length > 0 && isValidWord(wordInput)) {
-                alert(`
+                alert(`Player ${currentPlayer} made a valid word: ${wordInput}`);
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                resetGameTurn();
+            } else {
+                alert("Invalid word or no tiles flipped, try again.");
+            }
+        });
+
+        // Handle passing the turn
+        document.getElementById('pass-turn').addEventListener('click', () => {
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            resetGameTurn();
+        });
+
+        // Reset turn logic
+        function resetGameTurn() {
+            flippedTiles = [];
+            document.getElementById('word-input').disabled = true;
+            document.getElementById('submit-word').disabled = true;
+            renderBoard();
+            updateTurnMessage();
+            document.getElementById('word-input').value = '';
+        }
+
+        // Start the game
+        function startGame() {
+            shuffleTiles();
+            renderBoard();
+            updateTurnMessage();
+        }
+
+        // Initialize the game
+        startGame();
+    </script>
+</body>
+</html>

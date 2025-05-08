@@ -50,7 +50,6 @@
     <div id="turn-message">Player 1's Turn</div>
     
     <script>
-        // Full word list (e.g., from your words.txt)
         const wordList = [
             "rain", "rainy", "main", "train", "spin", "in", "tin", "spin", "rain", "sword", "horse", "host", "past"
         ];
@@ -65,6 +64,7 @@
                 const j = Math.floor(Math.random() * (i + 1));
                 [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
             }
+            console.log('Tiles shuffled:', tiles);
         }
 
         // Render the game board
@@ -79,6 +79,8 @@
                 tileDiv.addEventListener('click', () => flipTile(index));
                 board.appendChild(tileDiv);
             });
+
+            console.log('Board rendered:', tiles);
         }
 
         // Handle tile flipping
@@ -89,6 +91,7 @@
             document.getElementsByClassName('tile')[index].classList.add('flipped');
             document.getElementById('word-input').disabled = false; // Enable word input after flipping a tile
             document.getElementById('submit-word').disabled = false; // Enable the submit button
+            console.log('Tile flipped:', tiles[index], 'Flipped tiles:', flippedTiles);
             updateTurnMessage();
         }
 
@@ -96,6 +99,7 @@
         function updateTurnMessage() {
             const message = document.getElementById('turn-message');
             message.textContent = `Player ${currentPlayer}'s Turn`;
+            console.log('Turn message updated:', message.textContent);
         }
 
         // Check if the word is valid
@@ -107,39 +111,4 @@
         document.getElementById('submit-word').addEventListener('click', () => {
             const wordInput = document.getElementById('word-input').value.toLowerCase();
             if (flippedTiles.length > 0 && isValidWord(wordInput)) {
-                alert(`Player ${currentPlayer} made a valid word: ${wordInput}`);
-                currentPlayer = currentPlayer === 1 ? 2 : 1;
-                resetGameTurn();
-            } else {
-                alert("Invalid word or no tiles flipped, try again.");
-            }
-        });
-
-        // Handle passing the turn
-        document.getElementById('pass-turn').addEventListener('click', () => {
-            currentPlayer = currentPlayer === 1 ? 2 : 1;
-            resetGameTurn();
-        });
-
-        // Reset turn logic
-        function resetGameTurn() {
-            flippedTiles = [];
-            document.getElementById('word-input').disabled = true;
-            document.getElementById('submit-word').disabled = true;
-            renderBoard();
-            updateTurnMessage();
-            document.getElementById('word-input').value = '';
-        }
-
-        // Start the game
-        function startGame() {
-            shuffleTiles();
-            renderBoard();
-            updateTurnMessage();
-        }
-
-        // Initialize the game
-        startGame();
-    </script>
-</body>
-</html>
+                alert(`

@@ -44,8 +44,8 @@
 <body>
     <h1>Scrabble Word Game</h1>
     <div id="game-board"></div>
-    <input type="text" id="word-input" placeholder="Enter your word">
-    <button id="submit-word">Submit Word</button>
+    <input type="text" id="word-input" placeholder="Enter your word" disabled>
+    <button id="submit-word" disabled>Submit Word</button>
     <button id="pass-turn">Pass Turn</button>
     <div id="turn-message">Player 1's Turn</div>
     
@@ -87,6 +87,8 @@
 
             flippedTiles.push(index);
             document.getElementsByClassName('tile')[index].classList.add('flipped');
+            document.getElementById('word-input').disabled = false; // Enable word input after flipping a tile
+            document.getElementById('submit-word').disabled = false; // Enable the submit button
             updateTurnMessage();
         }
 
@@ -104,12 +106,12 @@
         // Handle word submission
         document.getElementById('submit-word').addEventListener('click', () => {
             const wordInput = document.getElementById('word-input').value.toLowerCase();
-            if (isValidWord(wordInput)) {
+            if (flippedTiles.length > 0 && isValidWord(wordInput)) {
                 alert(`Player ${currentPlayer} made a valid word: ${wordInput}`);
                 currentPlayer = currentPlayer === 1 ? 2 : 1;
                 resetGameTurn();
             } else {
-                alert("Invalid word, try again.");
+                alert("Invalid word or no tiles flipped, try again.");
             }
         });
 
@@ -122,6 +124,8 @@
         // Reset turn logic
         function resetGameTurn() {
             flippedTiles = [];
+            document.getElementById('word-input').disabled = true;
+            document.getElementById('submit-word').disabled = true;
             renderBoard();
             updateTurnMessage();
             document.getElementById('word-input').value = '';
